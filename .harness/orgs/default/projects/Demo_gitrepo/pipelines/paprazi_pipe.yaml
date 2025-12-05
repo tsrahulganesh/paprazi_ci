@@ -22,24 +22,18 @@ pipeline:
             arch: Amd64
           runtime:
             type: Cloud
-            spec: {}
+            spec:
+              container:
+                image: maven:3.9.6-eclipse-temurin-21
           execution:
             steps:
-              - step:
-                  name: Install Java 21
-                  identifier: InstallJava21
-                  type: Run
-                  spec:
-                    shell: Sh
-                    command: |
-                      sudo apt-get update
-                      sudo apt-get install -y openjdk-21-jdk
-                      echo "JAVA VERSION INSTALLED:"
-                      java -version
               - step:
                   type: Run
                   name: Maven Build
                   identifier: MavenBuild
                   spec:
                     shell: Sh
-                    command: mvn -version && mvn clean install
+                    command: |
+                      java -version
+                      mvn -version
+                      mvn clean install
