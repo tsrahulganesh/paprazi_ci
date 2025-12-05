@@ -22,18 +22,18 @@ pipeline:
             arch: Amd64
           runtime:
             type: Cloud
-            spec:
-              container:
-                image: maven:3.9.6-eclipse-temurin-21
+            spec: {}
           execution:
             steps:
               - step:
-                  type: Run
                   name: Maven Build
                   identifier: MavenBuild
+                  type: Run
                   spec:
                     shell: Sh
                     command: |
                       java -version
                       mvn -version
                       mvn clean install
+                container:
+                  image: maven:3.9.6-eclipse-temurin-21
