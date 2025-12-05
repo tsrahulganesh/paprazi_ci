@@ -29,39 +29,13 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Install_JDK_21
-                  identifier: Install_JDK_21
+                  name: Build with Maven
+                  identifier: Build
                   spec:
                     shell: Bash
                     command: |
-                      apt-get update
-                      apt-get install -y wget tar
-                      wget https://download.java.net/java/GA/jdk21/latest/binaries/openjdk-21_linux-x64_bin.tar.gz
-                      tar -xzf openjdk-21_linux-x64_bin.tar.gz -C /opt
-                      export JAVA_HOME=/opt/jdk-21
-                      export PATH=$JAVA_HOME/bin:$PATH
                       java -version
-              - step:
-                  type: Run
-                  name: Maven_Package
-                  identifier: Maven_Package
-                  spec:
-                    shell: Bash
-                    command: |
-                      export JAVA_HOME=/opt/jdk-21
-                      export PATH=$JAVA_HOME/bin:$PATH
-                      mvn -v
+                      mvn -version
                       mvn clean install
-              - step:
-                  type: RunTests
-                  name: Maven_Test_and_Reports
-                  identifier: Maven_Test
-                  spec:
-                    language: Java
-                    buildTool: Maven
-                    args: test
-                    reports:
-                      type: JUnit
-                      spec:
-                        paths:
-                          - target/surefire-reports/*.xml
+                container:
+                  image: eclipse-temurin:21-jdk
