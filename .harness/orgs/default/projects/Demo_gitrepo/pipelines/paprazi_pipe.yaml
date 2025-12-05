@@ -3,19 +3,17 @@ pipeline:
   identifier: paprazi_pipe
   projectIdentifier: Demo_gitrepo
   orgIdentifier: default
+  tags: {}
   properties:
     ci:
       codebase:
         connectorRef: rrahul
-        repoName: paprazi_pipe
-        build:
-          type: branch
-          spec:
-            branch: main
+        repoName: paprazi_ci
+        build: <+input>
   stages:
     - stage:
-        name: Build_Stage
-        identifier: Build_Stage
+        name: build
+        identifier: build
         type: CI
         spec:
           cloneCodebase: true
@@ -28,43 +26,14 @@ pipeline:
           execution:
             steps:
               - step:
+                  name: Maven Build
+                  identifier: MavenBuild
                   type: Run
-                  name: Install_JDK_11
-                  identifier: Install_JDK_11
                   spec:
-                    shell: Bash
+                    shell: Sh
                     command: |
-                      apt-get update
-                      apt-get install -y openjdk-11-jdk
                       java -version
-              - step:
-                  type: Run
-                  name: Maven_Package
-                  identifier: Maven_Package
-                  spec:
-                    shell: Bash
-                    command: |
-                      mvn -v
-                      mvn clean package
-              - step:
-                  type: RunTests
-                  name: Maven_Test_and_Reports
-                  identifier: Maven_Test
-                  spec:
-                    language: Java
-                    buildTool: Maven
-                    args: test
-                    reports:
-                      type: JUnit
-                      spec:
-                        paths:
-                          - target/surefire-reports/*.xml
-              - step:
-                  type: Run
-                  name: Upload_JAR
-                  identifier: Upload_JAR
-                  spec:
-                    shell: Bash
-                    command: |
-                      mkdir -p .harness
-                      cp target/*.jar .harness/
+                      mvn -version
+                      mvn clean install
+                container:
+                  image: maven:3.9.6-eclipse-temurin-21
