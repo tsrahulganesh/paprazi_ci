@@ -1,0 +1,42 @@
+pipeline:
+  projectIdentifier: Demo_gitrepo
+  orgIdentifier: default
+  properties:
+    ci:
+      codebase:
+        connectorRef: rrahul
+        repoName: paprazi_ci
+        build:
+          type: branch
+          spec:
+            branch: main
+  stages:
+    - stage:
+        name: Build_Stage
+        identifier: Build_Stage
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Build with Maven
+                  identifier: Build
+                  spec:
+                    shell: Bash
+                    command: |
+                      java -version
+                      mvn -version
+                      mvn clean install
+                container:
+                  image: eclipse-temurin:21-jdk
+  identifier: paprazi_pipe2
+  tags: {}
+  name: paprazi_pipe2
