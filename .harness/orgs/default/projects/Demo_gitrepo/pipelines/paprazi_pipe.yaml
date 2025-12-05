@@ -32,13 +32,13 @@ pipeline:
                   spec:
                     shell: Sh
                     command: |
-                      echo "JAVA VERSION:"
                       java -version
-
-                      echo "MAVEN VERSION:"
+                      echo "Installing Maven 3.9.6"
+                      curl -s https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz -o maven.tar.gz
+                      tar -xzf maven.tar.gz
+                      mv apache-maven-3.9.6 /opt/maven
+                      export PATH=/opt/maven/bin:$PATH
                       mvn -version
-
-                      echo "RUNNING MAVEN CLEAN INSTALL"
-                      mvn clean install -X
+                      mvn clean install
                 container:
-                  image: maven:3.9.9-eclipse-temurin-25
+                  image: eclipse-temurin:25-jdk
