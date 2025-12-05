@@ -35,7 +35,11 @@ pipeline:
                     shell: Bash
                     command: |
                       apt-get update
-                      apt-get install -y openjdk-21-jdk
+                      apt-get install -y wget tar
+                      wget https://download.java.net/java/GA/jdk21/latest/binaries/openjdk-21_linux-x64_bin.tar.gz
+                      tar -xzf openjdk-21_linux-x64_bin.tar.gz -C /opt
+                      export JAVA_HOME=/opt/jdk-21
+                      export PATH=$JAVA_HOME/bin:$PATH
                       java -version
               - step:
                   type: Run
@@ -44,8 +48,10 @@ pipeline:
                   spec:
                     shell: Bash
                     command: |
+                      export JAVA_HOME=/opt/jdk-21
+                      export PATH=$JAVA_HOME/bin:$PATH
                       mvn -v
-                      mvn clean package
+                      mvn clean install
               - step:
                   type: RunTests
                   name: Maven_Test_and_Reports
@@ -59,12 +65,3 @@ pipeline:
                       spec:
                         paths:
                           - target/surefire-reports/*.xml
-              - step:
-                  type: Run
-                  name: Upload_JAR
-                  identifier: Upload_JAR
-                  spec:
-                    shell: Bash
-                    command: |
-                      mkdir -p .harness
-                      cp target/*.jar .harness/
