@@ -26,14 +26,26 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: Maven Build
+                  name: Maven Build Java 25
                   identifier: MavenBuild
                   type: Run
                   spec:
                     shell: Sh
                     command: |
+                      echo "=== JAVA VERSION ==="
                       java -version
+
+                      echo "=== INSTALL MAVEN 3.9.6 ==="
+                      apt-get update
+                      apt-get install -y wget tar
+                      wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+                      tar -xzf apache-maven-3.9.6-bin.tar.gz -C /opt
+                      ln -s /opt/apache-maven-3.9.6/bin/mvn /usr/bin/mvn
+
+                      echo "=== MAVEN VERSION ==="
                       mvn -version
-                      mvn clean install
+
+                      echo "=== RUN MAVEN BUILD ==="
+                      mvn clean install -e -X
                 container:
-                  image: maven:3.9.6-eclipse-temurin-21
+                  image: eclipse-temurin:25-jdk
