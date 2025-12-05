@@ -14,12 +14,9 @@ pipeline:
     - stage:
         name: build
         identifier: build
-        description: ""
         type: CI
         spec:
           cloneCodebase: true
-          buildIntelligence:
-            enabled: true
           platform:
             os: Linux
             arch: Amd64
@@ -29,10 +26,19 @@ pipeline:
           execution:
             steps:
               - step:
+                  name: Install Java 21
+                  identifier: InstallJava21
                   type: Run
-                  name: Run_1
-                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: |
+                      sudo apt-get update
+                      sudo apt-get install -y openjdk-21-jdk
+                      java -version
+              - step:
+                  type: Run
+                  name: Maven Build
+                  identifier: MavenBuild
                   spec:
                     shell: Sh
                     command: mvn clean install
-                  description: desc
