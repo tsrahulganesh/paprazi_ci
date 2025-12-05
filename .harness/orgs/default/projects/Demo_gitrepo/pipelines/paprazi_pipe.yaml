@@ -34,6 +34,7 @@ pipeline:
                     command: |
                       sudo apt-get update
                       sudo apt-get install -y openjdk-21-jdk
+                      echo "JAVA VERSION INSTALLED:"
                       java -version
               - step:
                   type: Run
@@ -41,4 +42,4 @@ pipeline:
                   identifier: MavenBuild
                   spec:
                     shell: Sh
-                    command: mvn clean install
+                    command: mvn -version && mvn clean install
