@@ -1,4 +1,6 @@
 pipeline:
+  name: paprazi_pipe2
+  identifier: paprazi_pipe2
   projectIdentifier: Demo_gitrepo
   orgIdentifier: default
   properties:
@@ -27,16 +29,40 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Build with Maven
-                  identifier: Build
+                  name: Java_and_Maven_Versions
+                  identifier: Java_and_Maven_Versions
                   spec:
                     shell: Bash
                     command: |
                       java -version
                       mvn -version
+              - step:
+                  type: Run
+                  name: Maven_Build
+                  identifier: Maven_Build
+                  spec:
+                    shell: Bash
+                    command: |
                       mvn clean install
-                container:
-                  image: eclipse-temurin:21-jdk
-  identifier: paprazi_pipe2
-  tags: {}
-  name: paprazi_pipe2
+              - step:
+                  type: RunTests
+                  name: Run_Tests
+                  identifier: Run_Tests
+                  spec:
+                    language: Java
+                    buildTool: Maven
+                    args: test
+                    reports:
+                      type: JUnit
+                      spec:
+                        paths:
+                          - target/surefire-reports/*.xml
+              - step:
+                  type: Run
+                  name: Copy_JAR
+                  identifier: Copy_JAR
+                  spec:
+                    shell: Bash
+                    command: |
+                      mkdir -p .harness
+                      cp target/*.jar .harness/
