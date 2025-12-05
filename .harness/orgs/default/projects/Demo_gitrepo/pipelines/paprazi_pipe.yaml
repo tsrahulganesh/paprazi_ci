@@ -3,7 +3,6 @@ pipeline:
   identifier: paprazi_pipe
   projectIdentifier: Demo_gitrepo
   orgIdentifier: default
-  tags: {}
   properties:
     ci:
       codebase:
@@ -26,18 +25,12 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: Build with Maven
-                  identifier: BuildWithMaven
+                  name: Maven Build
+                  identifier: MavenBuild
                   type: Run
                   spec:
                     shell: Sh
                     command: |
-                      echo "JAVA VERSION:"
                       java -version
-
-                      echo "MAVEN VERSION:"
                       mvn -version
-
-                      mvn clean install -DskipTests=false
-                container:
-                  image: maven:3.9.6-eclipse-temurin-25
+                      mvn clean install
