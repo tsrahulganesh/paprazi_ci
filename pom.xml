@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>21</java.version>
+        <java.version>11</java.version>
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <selenium.version>4.23.0</selenium.version>
         <surefire.version>3.2.5</surefire.version>
@@ -37,13 +37,14 @@
 
     <build>
         <plugins>
-            <!-- Compile using the Java 21 release (modern, preferred over source/target) -->
+            <!-- Compile using Java 11 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
                     <release>${java.version}</release>
+                    <testRelease>${java.version}</testRelease>
                 </configuration>
             </plugin>
 
