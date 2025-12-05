@@ -30,7 +30,7 @@ pipeline:
               - step:
                   type: Run
                   name: Java_and_Maven_Versions
-                  identifier: Java_and_Maven_Versions
+                  identifier: Check_JDK
                   spec:
                     shell: Bash
                     command: |
