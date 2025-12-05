@@ -8,11 +8,14 @@ pipeline:
       codebase:
         connectorRef: rrahul
         repoName: paprazi_ci
-        build: <+input>
+        build:
+          type: branch
+          spec:
+            branch: main
   stages:
     - stage:
-        name: build
-        identifier: build
+        name: Build_Stage
+        identifier: Build_Stage
         type: CI
         spec:
           cloneCodebase: true
@@ -25,12 +28,43 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: Maven Build
-                  identifier: MavenBuild
                   type: Run
+                  name: Install_JDK_21
+                  identifier: Install_JDK_21
                   spec:
-                    shell: Sh
+                    shell: Bash
                     command: |
+                      apt-get update
+                      apt-get install -y openjdk-21-jdk
                       java -version
-                      mvn -version
-                      mvn clean install
+              - step:
+                  type: Run
+                  name: Maven_Package
+                  identifier: Maven_Package
+                  spec:
+                    shell: Bash
+                    command: |
+                      mvn -v
+                      mvn clean package
+              - step:
+                  type: RunTests
+                  name: Maven_Test_and_Reports
+                  identifier: Maven_Test
+                  spec:
+                    language: Java
+                    buildTool: Maven
+                    args: test
+                    reports:
+                      type: JUnit
+                      spec:
+                        paths:
+                          - target/surefire-reports/*.xml
+              - step:
+                  type: Run
+                  name: Upload_JAR
+                  identifier: Upload_JAR
+                  spec:
+                    shell: Bash
+                    command: |
+                      mkdir -p .harness
+                      cp target/*.jar .harness/
