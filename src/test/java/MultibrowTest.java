@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -22,11 +23,23 @@ public class MultibrowTest {
     // ---------- Firefox Driver ----------
     private WebDriver getFirefoxDriver() {
         FirefoxOptions options = new FirefoxOptions();
+
+        // Linux CI needs explicit binary path for Firefox ESR
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("linux")) {
+            options.setBinary("/usr/bin/firefox");   // Works on Harness + Ubuntu
+        }
+
         return new FirefoxDriver(options);
     }
 
     // ---------- Safari Driver ----------
     private WebDriver getSafariDriver() {
+
+        // Safari ONLY works on macOS — skip test on Linux/Windows
+        Assumptions.assumeTrue(System.getProperty("os.name").toLowerCase().contains("mac"),
+                "Skipping Safari test because Safari is only supported on macOS");
+
         return new SafariDriver();
     }
 
@@ -50,7 +63,7 @@ public class MultibrowTest {
 
     @Test
     void openFlipkartOnSafari() {
-        WebDriver driver = getSafariDriver();
+        WebDriver driver = getSafariDriver(); // Safari skipped automatically on Linux
         driver.get("https://www.flipkart.com");
         assertTrue(driver.getTitle().toLowerCase().contains("flipkart"));
         driver.quit();
