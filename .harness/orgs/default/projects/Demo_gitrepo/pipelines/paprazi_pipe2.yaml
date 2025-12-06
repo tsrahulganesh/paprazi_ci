@@ -52,11 +52,13 @@ pipeline:
                     language: Java
                     buildTool: Maven
                     args: test
+                    runOnlySelectedTests: true
                     reports:
                       type: JUnit
                       spec:
                         paths:
                           - target/surefire-reports/*.xml
+                    enableTestSplitting: false
               - step:
                   type: Run
                   name: Copy_JAR
@@ -66,3 +68,10 @@ pipeline:
                     command: |
                       mkdir -p .harness
                       cp target/*.jar .harness/
+              - step:
+                  type: Run
+                  name: Run_4
+                  identifier: Run_4
+                  spec:
+                    shell: Bash
+                    command: mvn clean install
